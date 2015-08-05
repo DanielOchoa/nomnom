@@ -3,7 +3,8 @@ NomNom
 
 NomNom is a data ingestion tool. It's a simple node app used to consume a large
 amount of json files from a specified directory and inserts the json objects
-into a mongo collection.
+into a mongo collection. This is the start of a project that I plan to use for
+big data analysis.
 
 Usage
 =====
