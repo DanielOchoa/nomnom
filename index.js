@@ -13,4 +13,7 @@ var main = new Main();
 
 return main.setup().then(function() {
   return main.run();
+}).catch(function() {
+  console.log(err);
+  process.exit(1);
 });

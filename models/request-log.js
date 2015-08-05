@@ -1,15 +1,13 @@
 
 import mongoose from 'mongoose';
-import config from '../config.js';
 
 const { Schema } = mongoose;
 
 const requestLogSchema = new Schema({
-	srcAddr:   String,
-	srcPort:   String,
-	dstAddr:   String,
-	dstPort:   String,
-	startTime: String
+	src_addr:   String,
+	src_port:   String,
+	dst_addr:   String,
+	start_time: String,
 });
 
 export default mongoose.model('RequestLog', requestLogSchema);
