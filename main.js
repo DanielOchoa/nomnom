@@ -1,0 +1,25 @@
+'use strict';
+
+import Ingest from './lib/ingest';
+import mongoose from 'mongoose';
+import config from './config.js';
+import RSVP from 'rsvp';
+
+export default class Main {
+  constructor() {
+    this.ingest = new Ingest();
+  }
+
+  setup() {
+    return new RSVP.Promise((resolve, reject) => {
+      // connect to db
+      mongoose.connect(config.mongoUrl);
+      resolve();
+    });
+  }
+
+  run() {
+    // ingest first
+    return this.ingest.run();
+  }
+}
