@@ -15,10 +15,7 @@ export default class Main {
       // connect to db
       mongoose.connect(config.mongoUrl);
       let db = mongoose.connection;
-      db.on('error', () => {
-        console.log('no connect');
-        reject();
-      });
+      db.on('error', reject);
       db.once('open', () => {
         console.log(`connected to ${db.host} at port ${db.port} ...`);
         resolve();

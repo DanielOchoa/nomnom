@@ -13,7 +13,10 @@ var main = new Main();
 
 return main.setup().then(function() {
   return main.run();
-}).catch(function() {
+}).catch(function(err) {
   console.log(err);
   process.exit(1);
+}).finally(function() {
+  console.log('finalized...');
+  process.exit(0);
 });
