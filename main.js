@@ -14,7 +14,15 @@ export default class Main {
     return new RSVP.Promise((resolve, reject) => {
       // connect to db
       mongoose.connect(config.mongoUrl);
-      resolve();
+      let db = mongoose.connection;
+      db.on('error', () => {
+        console.log('no connect');
+        reject();
+      });
+      db.once('open', () => {
+        console.log(`connected to ${db.host} at port ${db.port} ...`);
+        resolve();
+      });
     });
   }
 
