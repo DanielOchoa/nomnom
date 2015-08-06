@@ -18,3 +18,10 @@ This is a work in progress. anything that's ingested is expected to be in a
 specific format. See `lib/ingest.js` for the schema definition.
 
 Created by DanielO.
+
+Details
+=======
+
+For the most part `lib/ingest.js` is doing the actual heavy lifting. I'm using
+the promise pattern along with sprinkles of streaming and funcional
+programming. Michael Bay wouldn't be able to come up with this.
