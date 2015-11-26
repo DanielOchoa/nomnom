@@ -1,11 +1,20 @@
 {
-  "name": "sigma-neo4j",
+  "name": "node-neo4j-consumer",
   "version": "1.0.0",
-  "description": "",
+  "description": "Parse json and normalize to insert into neo4j",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Daniel Ochoa <daniel.o.ochoa@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "6.2.1",
+    "babel-preset-es2015": "6.1.18"
+  }
 }
