@@ -1,5 +1,3 @@
-
-const DATA_DIR = './test-data';
 /**
  *
  * App runs the show
@@ -9,6 +7,9 @@ const DATA_DIR = './test-data';
 import { JSONParser } from './parsers';
 import { Neo4jFunnel } from './db-funnels';
 import mapPromises from './utils/map-promises';
+import config from '../config';
+
+const DATA_DIR = config.dataDir;
 
 export default class App {
   constructor() {
@@ -21,6 +22,8 @@ export default class App {
   run() {
     return this.JSONParser.readDir(DATA_DIR).then(files => {
       return this.JSONParser.streamFiles(files);
+    }).catch(err => {
+      console.log('There was a problem reading from the directory:\n', err);
     });
   }
 
