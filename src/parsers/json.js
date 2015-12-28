@@ -9,12 +9,12 @@ export default class JSONParser extends Parser {
 
   streamFiles(files) {
     console.log('starting json stream...');
-    return mapPromises(files.map((file, i) => {
-      return this.streamFile(file, i);
+    return mapPromises(files.map((file, index) => {
+      return this.streamFile(file, index);
     }));
   }
 
-  streamFile(file, i) {
+  streamFile(file, index) {
     return new rsvp.Promise((resolve, reject) => {
 
       fs.createReadStream(file, {flags: 'r'})
@@ -25,7 +25,7 @@ export default class JSONParser extends Parser {
           // we don't want to have the endcallback fired every time a file is
           // done being streamed. we only want it when it finishes all the
           // files.
-          if (this._fileCount === i + 1) {
+          if (this._fileCount === index + 1) {
             this._endCallback();
           }
           return resolve();
