@@ -6,7 +6,6 @@
 
 import { JSONParser } from './parsers';
 import { Neo4jFunnel } from './db-funnels';
-import mapPromises from './utils/map-promises';
 import config from '../config';
 
 const DATA_DIR = config.dataDir;

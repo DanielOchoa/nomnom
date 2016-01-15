@@ -2,7 +2,8 @@
 export default class Funnel {
 
   constructor(options) {
-    this._options = options;
+    this._options    = options;
+    this._dataBuffer = [];
 
     // _insertIntoDb must be defined by each sublcass of this class
     if (!this._insertIntoDb) {
