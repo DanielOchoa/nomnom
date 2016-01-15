@@ -6,7 +6,9 @@ NomNom is a data ingestion node app.
 Usage
 =====
 
-`JSON_DIR=someDirPath node index.js`
+`JSON_DIR=someDirPath NEO4J_URL=someDbUrl node index.js`
+
+`NEO4J_URL` defaults to `http://localhost:7474`.
 
 Notice
 ======
