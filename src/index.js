@@ -19,6 +19,7 @@ export default class App {
   }
 
   run() {
+    console.log('running ...');
     return this.JSONParser.readDir(DATA_DIR).then(files => {
       return this.JSONParser.streamFiles(files);
     }).catch(err => {
@@ -37,7 +38,9 @@ export default class App {
     });
 
     this.JSONParser.on('end', () => {
-      console.log('done!!!');
+      return this.neo4jFunnel.cleanup().then(() => {
+        return console.log('done!!!');
+      });
     });
   }
 }

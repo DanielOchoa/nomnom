@@ -7,7 +7,12 @@ import cy from 'cypher-stream';
 const cypher = cy(config.neo4jURL);
 
 export default class Neo4jFunnel extends Funnel {
-
+  constructor() {
+    super(arguments);
+    this.counter     = 0;
+    this.limit       = 100;
+    this.transaction = cypher.transaction();
+  }
   /**
    * We need to return a promise here. This gets called for each data file,
    * potentially having thousands of recs.
@@ -21,49 +26,50 @@ export default class Neo4jFunnel extends Funnel {
    * return n, nn
    */
   _insertIntoDb(data) {
-    console.log('insert into db called');
-    console.log(data);
+    const query = `MERGE (n:Netflow {ip: "${data.src_addr}"})
+      MERGE(nn:Netflow {ip: "${data.dst_addr}"})
+      MERGE (n)-[:connect {port: ${data.src_port}, startTime: ${data.start_time}}]->(nn)`;
 
-    const query = `MERGE (n:Netflow) {ip: ${data.src_addr}})
-      MERGE(nn:Netflow {ip: ${data.dst_addr}})
-      MERGE (n)-[:connect {port: ${data.src_port}, startTime: ${data.start_time}}]`;
+    this.transaction.write(query);
+    this.counter += 1;
+
+    if (this.counter < this.limit) {
+      return rsvp.resolve();
+    }
+
+    this.counter = 0;
 
     return new rsvp.Promise((res, reject) => {
-      setTimeout(() => {
-        console.log('funnel timeout done ...');
-        //es.resume();
-        res();
-      }, 3000);
-/*      cypher(query)*/
-        //.on('end', () => {
-          //console.log('saved query: ', query);
-          //process.exit(1);
-          //res();
-        //}).on('error', err => {
-          //console.log(JSON.stringify(err));
-          //process.exit(1);
-          //reject(err);
-        //});
+      this.transaction
+        .on('data', noop)
+        .on('end', () => {
+          this.transaction = cypher.transaction();
+          res();
+        })
+        .on('error', err => {
+          console.log('ERROR', err);
+          reject();
+        });
+
+      this.transaction.commit();
+    });
+  }
+
+  cleanup() {
+    return new rsvp.Promise((res, reject) => {
+      this.transaction
+        .on('data', noop)
+        .on('end', () => {
+          res();
+        })
+        .on('error', err => {
+          console.log('ERROR', err);
+          reject();
+        });
+
+      this.transaction.commit();
     });
   }
 }
 
-//{"src_addr":"199.83.168.221","src_port":443,"dst_addr":"246.115.57.104","start_time":49621}
-
-/**
- * create:
- * CREATE (ee:Netflow { "src_addr":"199.83.168.221","src_port":443,"dst_addr":"246.115.57.104","start_time":49621 });
- * dismiss dst_addr, thats the node we'll hit. src_port can be data in the assoc
- *
- * 1. MATCH (aa: Netflow) WHERE aa.src_addr = "199.93..."
- * 2. If empty, create.. CREATE (aa:Netflow {....});
- * 3. Else, return.
- * 4. MATCH
- *
- * 4. (aa)-[:DESTINATION {src_port: "443"}]->()
- *
-merge (n:Netflow {ip: "192.168.1.1"})
-merge (nn:Netflow {ip: "192.168.1.2"})
-merge (n)-[:connect {port: 401, startTime: 12345}]-(nn)
-return n, nn
- */
+function noop() {}
